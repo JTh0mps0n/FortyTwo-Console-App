@@ -1,2 +1,4 @@
-package fortytwo.app;public class Domino {
+package fortytwo.app;
+
+public class Domino {
 }
