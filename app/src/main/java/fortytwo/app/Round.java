@@ -90,7 +90,7 @@ public class Round {
 
 
             System.out.println("Player " + currentPlayerNum + ", " + currentPlayer.getName() + "'s hand: ");
-            System.out.println(currentPlayer.getHand());
+            printHand(currentPlayer);
             System.out.println();
             printBids(bids);
             System.out.println();
@@ -152,5 +152,8 @@ public class Round {
                 System.out.println("Player " + (i + 1) + ", " + players[i].getName() + "'s bid: " + bids[i]);
             }
         }
+    }
+    private void printHand(Player player){
+        System.out.println(player.getHand());
     }
 }
