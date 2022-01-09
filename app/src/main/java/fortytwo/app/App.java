@@ -3,19 +3,17 @@
  */
 package fortytwo.app;
 
-import fortytwo.list.LinkedList;
 
-import static fortytwo.utilities.StringUtils.join;
-import static fortytwo.utilities.StringUtils.split;
-import static fortytwo.app.MessageUtils.getMessage;
-
-import org.apache.commons.text.WordUtils;
+import java.util.ArrayList;
 
 public class App {
     public static void main(String[] args) {
-        LinkedList tokens;
-        tokens = split(getMessage());
-        String result = join(tokens);
-        System.out.println(WordUtils.capitalize(result));
+
+        Player p1 = new Player("Justin", 1);
+        Player p3 = new Player("Nathan", 1);
+        Player p2 = new Player("Greg", 2);
+        Player p4 = new Player("Aimee", 2);
+        Round round = new Round(p1, p2, p3, p4);
+        round.playRound();
     }
 }
