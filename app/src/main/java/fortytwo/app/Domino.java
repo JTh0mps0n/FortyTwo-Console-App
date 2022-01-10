@@ -6,6 +6,8 @@ public class Domino {
     private final int pip1;
     private final int pip2;
     private int owner;
+    private final boolean count;
+    private final int points;
     private Hashtable<Integer, String> emojis;
 
     public Domino(int pip1, int pip2) {
@@ -19,6 +21,16 @@ public class Domino {
             this.pip1 = pip1;
             this.pip2 = pip2;
         }
+
+        if((pip1 + pip2)%5 == 0){
+            count = true;
+            points = pip1 + pip2;
+        }
+        else{
+            count = false;
+            points = 0;
+        }
+
         emojis = new Hashtable<Integer, String>();
         emojis.put(0, "□");
         emojis.put(1, "⚀");
@@ -50,5 +62,9 @@ public class Domino {
 
     public void setOwner(int playerNumber){
         owner = playerNumber;
+    }
+
+    public int getPoints() {
+        return points;
     }
 }

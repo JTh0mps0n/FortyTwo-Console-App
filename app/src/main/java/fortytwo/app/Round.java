@@ -15,10 +15,9 @@ public class Round {
     private int t2Points;
     private Hashtable<Domino, Integer> allDominoesTable; //integer represents what player has the domino (0 = played)
     private ArrayList<Domino> allDominoes;
-    private int currentPlayerNum;
     private Player currentPlayer;
 
-    public Round(Player p1, Player p2, Player p3, Player p4){
+    public Round(Player p1, Player p2, Player p3, Player p4) {
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
@@ -43,20 +42,26 @@ public class Round {
         }
     }
 
-    public String playRound(){
+    /**
+     * playRound() plays a full round of forty-two
+     */
+    public String playRound() {
         generateHands();
         doBidding();
-
 
         return "";
     }
 
-    public void generateHands(){
+
+    /**
+     * generateHands() shuffles the dominoes and 'deals' them out to each player.
+     */
+    private void generateHands() {
         Collections.shuffle(allDominoes);
-        Hand hand1 = new Hand();
-        Hand hand2 = new Hand();
-        Hand hand3 = new Hand();
-        Hand hand4 = new Hand();
+        Hand hand1 = new Hand(1);
+        Hand hand2 = new Hand(2);
+        Hand hand3 = new Hand(3);
+        Hand hand4 = new Hand(4);
         for (int i = 0; i < 7; i++) {
             hand1.addDomino(allDominoes.get(i));
             allDominoesTable.put(allDominoes.get(i), 1);
@@ -76,84 +81,136 @@ public class Round {
         p4.setHand(hand4);
     }
 
-    public void doBidding(){
-        Scanner input = new Scanner(System.in);
-        int[] bids = {-1, -1, -1, -1};
-        int maxBid = 29;
-        Player winner = p1;
 
-        for (currentPlayerNum = 1; currentPlayerNum <= 4; currentPlayerNum++) {
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
-
-            currentPlayer = players[currentPlayerNum - 1];
+    /**
+     * doBidding() performs the bidding section of the round and changes the class variables appropriately
+     */
+    private void doBidding() {
 
 
-            System.out.println("Player " + currentPlayerNum + ", " + currentPlayer.getName() + "'s hand: ");
-            printHand(currentPlayer);
-            System.out.println();
-            printBids(bids);
-            System.out.println();
+        int[] bids = {-1, -1, -1, -1};   //players bids in player order 1,2,3,4
+        int winningBid = 29; //winning bid number
+        Player winner = p1;//winner of the bid
 
+        for (int i = 0; i < 4; i++) {
+            currentPlayer = players[i];
 
-            boolean acceptableInput = false;
-            int currentBid = 0;
-            while(!acceptableInput){
-                System.out.println("Minimum Bid: " + (maxBid + 1));
-                System.out.println("What would you like to bid? (0 to pass)");
-                System.out.print("ENTER BID >> ");
-                if (!input.hasNextInt()){
-                    System.out.println("MUST ENTER AN INTEGER\n\n");
-                    input.next();
-                    continue;
-                }
-                currentBid = input.nextInt();
-                if(currentBid == 0){
-                    acceptableInput = true;
-                    continue;
-                }
-                if(currentBid <= maxBid){
-                    System.out.println("MUST BE GREATER THAN MINIMUM BID (" + (maxBid + 1) + ")\n\n");
-                    continue;
-                }
-                if(currentBid > 42){
-                    System.out.println("CANNOT BE GREATER THAN 42\n\n");
-                    continue;
-                }
-                acceptableInput = true;
+            boolean dumped = false;//check for last player needing to bid
+            if (i == 3 && winningBid == 29) {
+                dumped = true;
             }
 
-            bids[currentPlayerNum-1] = currentBid;
+            bids[i] = getPlayersBidConsole(currentPlayer, i + 1, bids, winningBid, dumped);//get current players bid through console
 
-            if(currentBid > maxBid){
-                maxBid = currentBid;
-                winner = players[currentPlayerNum-1];
+            if (bids[i] > winningBid) {//check for new winner
+                winningBid = bids[i];
+                winner = players[i];
             }
-
-
         }
 
-        System.out.println();
-        System.out.println();
-        System.out.println(winner.getName() + " won the bid for " + maxBid + "!");
+        displayWinnerConsole(winner, winningBid);//display winner to console
 
     }
-    private void printBids(int[] bids){
+
+    /**
+     * getPlayersBidConsole() gets the players bid through console input.
+     * Helper function for doBidding()
+     *
+     * @param player     current player bidding
+     * @param playerNum  number of player bidding
+     * @param bids       current bids of all players
+     * @param winningBid bid currently winning
+     * @param dumped     boolean representing if the current player is forced to bid
+     * @return the bid made by the player
+     */
+    private int getPlayersBidConsole(Player player, int playerNum, int[] bids, int winningBid, boolean dumped) {
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+
+        System.out.println("Player " + playerNum + ", " + player.getName() + "'s hand: ");
+        printHand(player);
+        System.out.println();
+
+        printBids(bids);
+        System.out.println();
+
+        boolean acceptableInput = false; // to validate input
+        int currentBid = 0; //bid given
+
+        while (!acceptableInput) {
+            System.out.println("Minimum Bid: " + (winningBid + 1));
+            if (dumped) {
+                System.out.println("** You MUST bid. **");
+                System.out.println("What would you like to bid?");
+            } else {
+                System.out.println("What would you like to bid? (0 to pass)");
+            }
+            System.out.print("ENTER BID >> ");
+            if (!input.hasNextInt()) {
+                System.out.println("MUST ENTER AN INTEGER\n\n");
+                input.next();
+                continue;
+            }
+            currentBid = input.nextInt();
+            if (currentBid == 0 && !dumped) {
+                acceptableInput = true;
+                continue;
+            }
+            if (currentBid <= winningBid) {
+                System.out.println("MUST BE GREATER THAN MINIMUM BID (" + (winningBid + 1) + ")\n\n");
+                continue;
+            }
+            if (currentBid > 42) {
+                System.out.println("CANNOT BE GREATER THAN 42\n\n");
+                continue;
+            }
+            acceptableInput = true;
+        }
+
+        return currentBid;
+    }
+
+    /**
+     * displayWinnerConsole() prints out the winner of the bid to the console
+     *
+     * @param winner     winner of the bid
+     * @param winningBid winning bid
+     */
+    private void displayWinnerConsole(Player winner, int winningBid) {
+        System.out.println();
+        System.out.println();
+        System.out.println(winner.getName() + " won the bid for " + winningBid + "!");
+    }
+
+    /**
+     * printBids() prints the previous players bids for convenient reading.
+     * Helper function for getPlayersBidConsole()
+     *
+     * @param bids current bids of all players
+     */
+    private void printBids(int[] bids) {
         System.out.println("BIDS:");
         for (int i = 0; i < bids.length; i++) {
-            if(bids[i] == -1){
-                System.out.println("Player " + (i+1) + ", " + players[i].getName() + "'s bid: YOUR TURN TO BID");
+            if (bids[i] == -1) {
+                System.out.println("Player " + (i + 1) + ", " + players[i].getName() + "'s bid: YOUR TURN TO BID");
                 break;
             }
-            if(bids[i] == 0){
-                System.out.println("Player " + (i+1) + ", " + players[i].getName() + "'s bid: passed");
-            }
-            else {
+            if (bids[i] == 0) {
+                System.out.println("Player " + (i + 1) + ", " + players[i].getName() + "'s bid: passed");
+            } else {
                 System.out.println("Player " + (i + 1) + ", " + players[i].getName() + "'s bid: " + bids[i]);
             }
         }
     }
-    private void printHand(Player player){
+
+    /**
+     * printHand() prints the hand of a given player
+     *
+     * @param player player whose hand you want to print
+     */
+    private void printHand(Player player) {
         System.out.println(player.getHand());
     }
 }
