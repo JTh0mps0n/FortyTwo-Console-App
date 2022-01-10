@@ -9,6 +9,7 @@ public class Domino {
     private final boolean count;
     private final int points;
     private Hashtable<Integer, String> emojis;
+    private boolean useEmojis = false;
 
     public Domino(int pip1, int pip2) {
         owner = 0;
@@ -43,14 +44,25 @@ public class Domino {
 
     @Override
     public String toString() {
-        String pip1str = emojis.get(pip1);
-        String pip2str = emojis.get(pip2);
+        String pip1str;
+        String pip2str;
+        String separator;
+        if(useEmojis){
+            pip1str = emojis.get(pip1);
+            pip2str = emojis.get(pip2);
+            separator = "";
+        }
+        else{
+            pip1str = "" + pip1;
+            pip2str = "" + pip2;
+            separator = ":";
+        }
 
         if (pip1 > pip2){
-            return pip1str + "" + pip2str;
+            return pip1str + separator + pip2str;
         }
         else {
-            return pip2str + "" + pip1str;
+            return pip2str + separator + pip1str;
         }
     }
 

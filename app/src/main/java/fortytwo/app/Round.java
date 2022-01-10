@@ -9,7 +9,7 @@ public class Round {
     private Player p4;
     private Player[] players;
     private int trump;
-    private int bidWinners; //1 or 2 for team 1 or team 2
+    private Player bidWinner; //1 or 2 for team 1 or team 2
     private int bid;
     private int t1Points;
     private int t2Points;
@@ -48,6 +48,7 @@ public class Round {
     public String playRound() {
         generateHands();
         doBidding();
+        getTrumpsConsole(bidWinner);
 
         return "";
     }
@@ -90,7 +91,7 @@ public class Round {
 
         int[] bids = {-1, -1, -1, -1};   //players bids in player order 1,2,3,4
         int winningBid = 29; //winning bid number
-        Player winner = p1;//winner of the bid
+        bidWinner = p1;//winner of the bid
 
         for (int i = 0; i < 4; i++) {
             currentPlayer = players[i];
@@ -104,11 +105,11 @@ public class Round {
 
             if (bids[i] > winningBid) {//check for new winner
                 winningBid = bids[i];
-                winner = players[i];
+                bidWinner = players[i];
             }
         }
 
-        displayWinnerConsole(winner, winningBid);//display winner to console
+        displayWinnerConsole(bidWinner, winningBid);//display winner to console
 
     }
 
@@ -212,5 +213,38 @@ public class Round {
      */
     private void printHand(Player player) {
         System.out.println(player.getHand());
+    }
+
+    /**
+     * getTrumpsConsole() gets the trump of the winners choice
+     * @param winner the winner of the bid
+     * */
+    private void getTrumpsConsole(Player winner){
+        Scanner input = new Scanner(System.in);
+
+        System.out.println();
+        System.out.println();
+        System.out.println(winner.getName() + "'s Hand:");
+        printHand(winner);
+        System.out.println();
+        boolean acceptableInput = false; // to validate input
+
+        while (!acceptableInput) {
+            System.out.println(winner.getName() + ", what would you like to be trumps?");
+            System.out.print("ENTER TRUMP >> ");
+            if (!input.hasNextInt()) {
+                System.out.println("MUST ENTER AN INTEGER\n\n");
+                input.next();
+                continue;
+            }
+            trump = input.nextInt();
+            if (trump < 0 || trump > 6) {
+                System.out.println("MUST BE BETWEEN 0 and 6\n\n");
+                continue;
+            }
+            acceptableInput = true;
+        }
+        System.out.println();
+        System.out.println(winner.getName() + " has selected " + trump + "'s as trumps!");
     }
 }
