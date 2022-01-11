@@ -59,4 +59,25 @@ class DominoTest {
         assertTrue(toStr1.equals("0:0"));
         assertTrue(toStr2.equals("1:0"));
     }
+
+    @Test
+    void testIsBeatBy(){
+        // arrange
+        Domino doubleSix = new Domino (6, 6);
+        Domino sixFour = new Domino(6, 4);
+        Domino doubleFour = new Domino(4, 4);
+        Domino aceDuece = new Domino(1, 2);
+        Domino threeAce = new Domino(3, 1);
+        Domino doubleTwo = new Domino(2, 2);
+        Domino aceBlank = new Domino(1, 0);
+        // act
+        // assert
+        assertFalse(doubleSix.isBeatBy(sixFour, 1, 6));
+        assertTrue(doubleSix.isBeatBy(sixFour, 1, 4));
+        assertFalse(doubleFour.isBeatBy(sixFour, 1, 4));
+        assertTrue(doubleSix.isBeatBy(aceDuece, 2, 6));
+        assertTrue(doubleFour.isBeatBy(threeAce, 1, 4));
+        assertTrue(doubleFour.isBeatBy(doubleTwo, 1, 2));
+
+    }
 }

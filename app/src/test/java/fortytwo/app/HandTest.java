@@ -16,7 +16,8 @@ class HandTest {
         Domino d5 = new Domino(4,0);
         Domino d6 = new Domino(5,0);
         Domino d7 = new Domino(6,0);
-        Hand hand = new Hand(0);
+        Player player = new Player("");
+        Hand hand = new Hand(player);
         hand.addDomino(d1);
         hand.addDomino(d2);
         hand.addDomino(d3);

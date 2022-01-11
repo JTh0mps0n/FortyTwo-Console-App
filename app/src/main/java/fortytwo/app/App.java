@@ -9,10 +9,10 @@ import java.util.ArrayList;
 public class App {
     public static void main(String[] args) {
 
-        Player p1 = new Player("Justin", 1);
-        Player p3 = new Player("Nathan", 1);
-        Player p2 = new Player("Greg", 2);
-        Player p4 = new Player("Aimee", 2);
+        Player p1 = new Player("Justin");
+        Player p2 = new Player("Laura");
+        Player p3 = new Player("Greg");
+        Player p4 = new Player("Aimee");
         Round round = new Round(p1, p2, p3, p4);
         round.playRound();
     }

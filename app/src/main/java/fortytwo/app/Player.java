@@ -5,21 +5,15 @@ public class Player {
     private String name;
     private int num;
     private Hand hand;
-    private int team; //either 1 or 2
+    private Team team; //either 1 or 2
 
-    public Player(String name, int team){
+    public Player(String name){
         this.name = name;
         this.hand = null;
-        this.team = team;
+        this.team = null;
         num = 0;
     }
 
-    public Player(String name, int id, int team){
-        this.name = name;
-        this.hand = null;
-        this.team = team;
-        this.num = id;
-    }
 
     public String setHand(Hand hand){
         this.hand = hand;
@@ -38,15 +32,20 @@ public class Player {
         return num;
     }
 
-    public int getTeam() {
+    public Team getTeam() {
         return team;
     }
 
-    public void setTeam(int team) {
+    public void setTeam(Team team) {
         this.team = team;
     }
 
     public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString(){
         return name;
     }
 }
