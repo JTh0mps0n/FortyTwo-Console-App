@@ -3,16 +3,22 @@ package fortytwo.app;
 import java.util.Hashtable;
 
 public class Domino {
-    private final int pip1;
-    private final int pip2;
-    private Player owner;
-    private final boolean count;
-    private final int points;
-    private Hashtable<Integer, String> emojis;
-    private boolean useEmojis = false;
+    private final int pip1;                         //one side of the domino
+    private final int pip2;                         //other side of the domino
+    private Player owner;                           //owner of this domino
+    private final boolean count;                    //if this domino is count or not
+    private final int points;                       //points this domino is worth
+    private Hashtable<Integer, String> emojis;      //emojis for displaying this domino with dice faces
+    private final boolean useEmojis = false;        //whether to use the emojis or not
 
+    /**
+     * Constructor for Domino
+     *
+     * @param pip1 one side of the domino
+     * @param pip2 other side
+     * */
     public Domino(int pip1, int pip2) {
-        //pip1 should always be greater.
+        //pip1 should always be greater
         if (pip2 > pip1) {
             this.pip1 = pip2;
             this.pip2 = pip1;
@@ -21,6 +27,7 @@ public class Domino {
             this.pip2 = pip2;
         }
 
+        //determine if count or not
         if ((pip1 + pip2) % 5 == 0) {
             count = true;
             points = pip1 + pip2;
@@ -29,6 +36,7 @@ public class Domino {
             points = 0;
         }
 
+        //establish emojis
         emojis = new Hashtable<Integer, String>();
         emojis.put(0, "□");
         emojis.put(1, "⚀");
@@ -39,8 +47,14 @@ public class Domino {
         emojis.put(6, "⚅");
     }
 
+    /**
+     * gets a string representation of this domino
+     *
+     * @return a string representation of this domino
+     * */
     @Override
     public String toString() {
+        //get the left, middle, and right side of the domino in string form
         String pip1str;
         String pip2str;
         String separator;
@@ -54,6 +68,7 @@ public class Domino {
             separator = ":";
         }
 
+        //always have higher side on left
         if (pip1 > pip2) {
             return pip1str + separator + pip2str;
         } else {
@@ -61,20 +76,40 @@ public class Domino {
         }
     }
 
+    /**
+     * used for equality of two dominoes
+     *
+     * @return true if the two are equal, false otherwise
+     * */
     @Override
     public boolean equals(Object rhsObject) {
         Domino rhs = (Domino) rhsObject;
         return rhs.toString().equals(toString());
     }
 
+    /**
+     * sets the owner of this domino
+     *
+     * @param owner player to be assigned to owner
+     * */
     public void setOwner(Player owner) {
         this.owner = owner;
     }
 
+    /**
+     * gets the owner of this domino
+     *
+     * @return returns the owner of this domino
+     * */
     public Player getOwner() {
         return owner;
     }
 
+    /**
+     * gets the number of points this domino is worth
+     *
+     * @return returns the number of points this domino is worth
+     * */
     public int getPoints() {
         return points;
     }
