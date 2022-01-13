@@ -63,131 +63,53 @@ public class Round {
     }
 
     /**
-     * playRound() plays a full round of forty-two
-     */
-    public String playRound() {
-        //generate hands
-        generateHands();
-
-        //do bidding and set current player to winner of the bid
-        currentPlayer = doBidding();
-
-        //ask user for trumps and assign the value to trump
-        trump = View.getTrumpsConsole(currentPlayer);
-
-        //play 7 tricks
-        for (int i = 0; i < 7; i++) {
-            currentPlayer = playTrick();//update current player to winner of this trick
-            tricks.add(currentTrick);//add trick to history of tricks
-        }
-
-        return "";
-    }
-
-
-    /**
-     * generateHands() shuffles the dominoes and 'deals' them out to each player.
-     */
-    private void generateHands() {
-        //shuffle all dominoes
-        Collections.shuffle(allDominoes);
-
-        //create new hands
-        Hand hand1 = new Hand(p1);
-        Hand hand2 = new Hand(p2);
-        Hand hand3 = new Hand(p3);
-        Hand hand4 = new Hand(p4);
-
-        //add dominoes to hands
-        for (int i = 0; i < 7; i++) {
-            hand1.addDomino(allDominoes.get(i));
-
-            hand2.addDomino(allDominoes.get(i + 7));
-
-            hand3.addDomino(allDominoes.get(i + 14));
-
-            hand4.addDomino(allDominoes.get(i + 21));
-        }
-    }
-
-
-    /**
-     * doBidding() performs the bidding section of the round and changes the class variables appropriately
+     * Round Constructor taking in the 4 players playing
      *
-     * @return winner of the bid
+     * @param players ArrayList of players
      */
-    private Player doBidding() {
+    public Round(ArrayList<Player> players) {
+        //set players and add them to player array
+        this.p1 = players.get(0);
+        this.p2 = players.get(1);
+        this.p3 = players.get(2);
+        this.p4 = players.get(3);
+        this.players = new ArrayList<Player>();
+        this.players.add(p1);
+        this.players.add(p2);
+        this.players.add(p3);
+        this.players.add(p4);
 
+        //create teams
+        team1 = new Team(p1, p3, 1);
+        team2 = new Team(p2, p4, 2);
+        teams = new ArrayList<Team>();
+        teams.add(team1);
+        teams.add(team2);
 
-        int[] bids = {-1, -1, -1, -1};   //players bids in player order 1,2,3,4
-        int winningBid = 29; //winning bid number
-        bidWinner = p1;//winner of the bid
-
-        for (int i = 0; i < 4; i++) {
-            currentPlayer = players.get(i);
-
-            //check for last player needing to bid
-            boolean dumped = false;
-            if (i == 3 && winningBid == 29) {
-                dumped = true;
-            }
-
-            //get bid
-            bids[i] = View.getPlayersBidConsole(currentPlayer, i + 1, bids, winningBid, dumped, this);//get current players bid through console
-
-            //check for new winner
-            if (bids[i] > winningBid) {
-                winningBid = bids[i];
-                bidWinner = players.get(i);
+        //initialize dominoes
+        allDominoes = new ArrayList<Domino>();
+        for (int i = 0; i <= 6; i++) {
+            for (int j = i; j <= 6; j++) {
+                Domino current = new Domino(i, j);
+                allDominoes.add(current);
             }
         }
 
-        //display winner to console
-        View.displayBidWinnerConsole(bidWinner, winningBid);
-
-        bid = winningBid;
-        return bidWinner;
+        //setup for tricks
+        currentTrick = null;
+        tricks = new ArrayList<Trick>();
     }
 
-    /**
-     * plays through the trick part of the round and then returns the winning player
-     *
-     * @return the winning player
-     */
-    private Player playTrick() {
-
-        int i = 0;//find index of current player
-        for (i = 0; i < 4; i++) {
-            if (currentPlayer == players.get(i)) {
-                break;
-            }
-        }
-
-        //create new trick
-        currentTrick = new Trick(View.leadDominoConsole(this), trump);
-
-        //take 3 subsequent turns
-        currentPlayer = players.get((i + 1) % 4);
-        currentTrick.playDomino(View.playTurnConsole(this));
-        currentPlayer = players.get((i + 2) % 4);
-        currentTrick.playDomino(View.playTurnConsole(this));
-        currentPlayer = players.get((i + 3) % 4);
-        currentTrick.playDomino(View.playTurnConsole(this));
-
-        //add points for trick to the winners points for the round
-        if (currentTrick.getWinner().getTeam() == team1) {
-            team1.addPoints(currentTrick.getPoints() + 1);
-            return currentTrick.getWinner();
-        } else {
-            team2.addPoints(currentTrick.getPoints() + 1);
-            return currentTrick.getWinner();
-        }
+    public ArrayList<Domino> getAllDominoes() {
+        return allDominoes;
     }
-
-
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 
     public ArrayList<Trick> getTricks() {
@@ -202,12 +124,24 @@ public class Round {
         return trump;
     }
 
+    public void setTrump(int trump) {
+        this.trump = trump;
+    }
+
     public int getBid() {
         return bid;
     }
 
+    public void setBid(int bid) {
+        this.bid = bid;
+    }
+
     public Player getBidWinner() {
         return bidWinner;
+    }
+
+    public void setBidWinner(Player bidWinner) {
+        this.bidWinner = bidWinner;
     }
 
     public ArrayList<Team> getTeams() {
@@ -216,5 +150,9 @@ public class Round {
 
     public Trick getCurrentTrick() {
         return currentTrick;
+    }
+
+    public void setCurrentTrick(Trick currentTrick) {
+        this.currentTrick = currentTrick;
     }
 }

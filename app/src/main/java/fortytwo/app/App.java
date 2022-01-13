@@ -17,7 +17,12 @@ public class App {
         Player p2 = new Player("Laura");
         Player p3 = new Player("Greg");
         Player p4 = new Player("Aimee");
-        Round round = new Round(p1, p2, p3, p4);
-        round.playRound();
+        ArrayList<Player> players = new ArrayList<Player>();
+        players.add(p1);
+        players.add(p2);
+        players.add(p3);
+        players.add(p4);
+
+        GameController.playRound(players);
     }
 }

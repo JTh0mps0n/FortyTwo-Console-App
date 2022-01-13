@@ -16,6 +16,7 @@ public class View {
      * @param bids       current bids of all players
      * @param winningBid bid currently winning
      * @param dumped     boolean representing if the current player is forced to bid
+     * @param round      the round for which this is being called for
      * @return the bid made by the player
      */
     public static int getPlayersBidConsole(Player player, int playerNum, int[] bids, int winningBid, boolean dumped, Round round) {
@@ -109,7 +110,8 @@ public class View {
      * printBids() prints the previous players bids for convenient reading.
      * Helper function for getPlayersBidConsole()
      *
-     * @param bids current bids of all players
+     * @param bids  current bids of all players
+     * @param round the round for which this is being called for
      */
     public static void printBids(int[] bids, Round round) {
         ArrayList<Player> players = round.getPlayers();
@@ -191,6 +193,7 @@ public class View {
     /**
      * asks given player which domino they would like to play and returns that domino
      *
+     * @param round the round for which this is being called for
      * @return the domino selected by the current player
      */
     public static Domino playTurnConsole(Round round) {
@@ -280,6 +283,7 @@ public class View {
     /**
      * asks a player to lead a domino and returns that domino
      *
+     * @param round the round for which this is being called for
      * @return the domino they choose.
      */
     public static Domino leadDominoConsole(Round round) {
@@ -331,7 +335,6 @@ public class View {
             if (i == 0) {//if they want to show round history
                 displayRoundHistory(round);
                 printGameInfo(round);
-                printHand(currentPlayer);
                 System.out.println(currentPlayer.getName() + "'s turn.");
                 printLines(1);
                 printHand(currentPlayer);
@@ -351,6 +354,8 @@ public class View {
 
     /**
      * print out round details and await response
+     *
+     * @param round the round for which this is being called for
      */
     public static void displayRoundHistory(Round round) {
         clear();
@@ -378,6 +383,8 @@ public class View {
 
     /**
      * print out game info
+     *
+     * @param round the round for which this is being called for
      */
     public static void printGameInfo(Round round) {
         ArrayList<Player> players = round.getPlayers();
@@ -405,6 +412,8 @@ public class View {
 
     /**
      * prints out a statement regarding the winner of the bid
+     *
+     * @param round the round for which this is being called for
      */
     public static void printWinnerStatement(Round round) {
         Player bidWinner = round.getBidWinner();
