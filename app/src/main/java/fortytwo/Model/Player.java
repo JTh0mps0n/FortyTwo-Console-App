@@ -1,4 +1,4 @@
-package fortytwo.app;
+package fortytwo.Model;
 
 
 public class Player {

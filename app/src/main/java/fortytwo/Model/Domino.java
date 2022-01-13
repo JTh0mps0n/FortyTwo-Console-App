@@ -1,4 +1,4 @@
-package fortytwo.app;
+package fortytwo.Model;
 
 import java.util.Hashtable;
 

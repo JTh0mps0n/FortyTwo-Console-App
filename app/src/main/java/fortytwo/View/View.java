@@ -1,147 +1,11 @@
-package fortytwo.app;
+package fortytwo.View;
 
-import java.util.*;
+import fortytwo.Model.*;
 
-public class Round {
-    private Player p1;                       //player 1 (team 1)
-    private Player p2;                       //player 2 (team 2)
-    private Player p3;                       //player 3 (team 1)
-    private Player p4;                       //player 4 (team 2)
-    private Player[] players;                //array of players
-    private Team team1;                      //team 2
-    private Team team2;                      //team 1
-    private int trump;                       //the trump of this round
-    private Player bidWinner;                //winner of the bid
-    private int bid;                         //the bid that won the bidding process
-    private ArrayList<Domino> allDominoes;   //all dominoes in a list used to generate hands
-    private Player currentPlayer;            //current player who should be playing through console
-    private Trick currentTrick;              //current trick being played
-    private ArrayList<Trick> tricks;         //list of tricks played throughout this round
+import java.util.ArrayList;
+import java.util.Scanner;
 
-    /**
-     * Round Constructor taking in the 4 players playing
-     *
-     * @param p1 player 1 (team 1)
-     * @param p2 player 2 (team 2)
-     * @param p3 player 3 (team 1)
-     * @param p4 player 4 (team 2)
-     * */
-    public Round(Player p1, Player p2, Player p3, Player p4) {
-        //set players and add them to player array
-        this.p1 = p1;
-        this.p2 = p2;
-        this.p3 = p3;
-        this.p4 = p4;
-        players = new Player[4];
-        players[0] = p1;
-        players[1] = p2;
-        players[2] = p3;
-        players[3] = p4;
-
-        //create teams
-        team1 = new Team(p1, p3, 1);
-        team2 = new Team(p2, p4, 2);
-
-        //initialize dominoes
-        allDominoes = new ArrayList<Domino>();
-        for (int i = 0; i <= 6; i++) {
-            for (int j = i; j <= 6; j++) {
-                Domino current = new Domino(i, j);
-                allDominoes.add(current);
-            }
-        }
-
-        //setup for tricks
-        currentTrick = null;
-        tricks = new ArrayList<Trick>();
-    }
-
-    /**
-     * playRound() plays a full round of forty-two
-     */
-    public String playRound() {
-        //generate hands
-        generateHands();
-
-        //do bidding and set current player to winner of the bid
-        currentPlayer = doBidding();
-
-        //ask user for trumps and assign the value to trump
-        trump = getTrumpsConsole(bidWinner);
-
-        //play 7 tricks
-        for (int i = 0; i < 7; i++) {
-            currentPlayer = playTrick();//update current player to winner of this trick
-            tricks.add(currentTrick);//add trick to history of tricks
-        }
-
-        return "";
-    }
-
-
-    /**
-     * generateHands() shuffles the dominoes and 'deals' them out to each player.
-     */
-    private void generateHands() {
-        //shuffle all dominoes
-        Collections.shuffle(allDominoes);
-
-        //create new hands
-        Hand hand1 = new Hand(p1);
-        Hand hand2 = new Hand(p2);
-        Hand hand3 = new Hand(p3);
-        Hand hand4 = new Hand(p4);
-
-        //add dominoes to hands
-        for (int i = 0; i < 7; i++) {
-            hand1.addDomino(allDominoes.get(i));
-
-            hand2.addDomino(allDominoes.get(i + 7));
-
-            hand3.addDomino(allDominoes.get(i + 14));
-
-            hand4.addDomino(allDominoes.get(i + 21));
-        }
-    }
-
-
-    /**
-     * doBidding() performs the bidding section of the round and changes the class variables appropriately
-     *
-     * @return winner of the bid
-     */
-    private Player doBidding() {
-
-
-        int[] bids = {-1, -1, -1, -1};   //players bids in player order 1,2,3,4
-        int winningBid = 29; //winning bid number
-        bidWinner = p1;//winner of the bid
-
-        for (int i = 0; i < 4; i++) {
-            currentPlayer = players[i];
-
-            //check for last player needing to bid
-            boolean dumped = false;
-            if (i == 3 && winningBid == 29) {
-                dumped = true;
-            }
-
-            //get bid
-            bids[i] = getPlayersBidConsole(currentPlayer, i + 1, bids, winningBid, dumped);//get current players bid through console
-
-            //check for new winner
-            if (bids[i] > winningBid) {
-                winningBid = bids[i];
-                bidWinner = players[i];
-            }
-        }
-
-        //display winner to console
-        displayBidWinnerConsole(bidWinner, winningBid);
-
-        bid = winningBid;
-        return bidWinner;
-    }
+public class View {
 
     /**
      * getPlayersBidConsole() gets the players bid through console input.
@@ -154,7 +18,7 @@ public class Round {
      * @param dumped     boolean representing if the current player is forced to bid
      * @return the bid made by the player
      */
-    private int getPlayersBidConsole(Player player, int playerNum, int[] bids, int winningBid, boolean dumped) {
+    public static int getPlayersBidConsole(Player player, int playerNum, int[] bids, int winningBid, boolean dumped, Round round) {
         Scanner input = new Scanner(System.in);
 
         //show whos turn it is to bid and hide hand
@@ -175,7 +39,7 @@ public class Round {
         printLines(1);
 
         //display bids from all players
-        printBids(bids);
+        printBids(bids, round);
         printLines(1);
 
         boolean acceptableInput = false; // to validate input
@@ -196,7 +60,8 @@ public class Round {
 
             //if they entered a non integer character
             if (!input.hasNextInt()) {
-                System.out.println("MUST ENTER AN INTEGER\n\n");
+                System.out.println("MUST ENTER AN INTEGER");
+                printLines(2);
                 input.next();
                 continue;
             }
@@ -230,7 +95,7 @@ public class Round {
      * @param winner     winner of the bid
      * @param winningBid winning bid
      */
-    private void displayBidWinnerConsole(Player winner, int winningBid) {
+    public static void displayBidWinnerConsole(Player winner, int winningBid) {
         clear();
         System.out.println(winner.getName() + " won the bid for " + winningBid + "!\n");
 
@@ -246,28 +111,21 @@ public class Round {
      *
      * @param bids current bids of all players
      */
-    private void printBids(int[] bids) {
+    public static void printBids(int[] bids, Round round) {
+        ArrayList<Player> players = round.getPlayers();
+
         System.out.println("BIDS:");
         for (int i = 0; i < bids.length; i++) {
             if (bids[i] == -1) {
-                System.out.println(players[i].getName() + "'s bid: YOUR TURN TO BID");
+                System.out.println(players.get(i).getName() + "'s bid: YOUR TURN TO BID");
                 break;
             }
             if (bids[i] == 0) {
-                System.out.println(players[i].getName() + "'s bid: passed");
+                System.out.println(players.get(i).getName() + "'s bid: passed");
             } else {
-                System.out.println(players[i].getName() + "'s bid: " + bids[i]);
+                System.out.println(players.get(i).getName() + "'s bid: " + bids[i]);
             }
         }
-    }
-
-    /**
-     * printHand() prints the hand of a given player
-     *
-     * @param player player whose hand you want to print
-     */
-    private void printHand(Player player) {
-        System.out.println(player.getHand());
     }
 
     /**
@@ -275,7 +133,9 @@ public class Round {
      *
      * @param winner the winner of the bid
      */
-    private int getTrumpsConsole(Player winner) {
+    public static int getTrumpsConsole(Player winner) {
+        int trump = -1;
+
         Scanner input = new Scanner(System.in);
 
         //show whos turn it is to pick trumps and hide hand
@@ -329,51 +189,20 @@ public class Round {
     }
 
     /**
-     * plays through the trick part of the round and then returns the winning player
-     *
-     * @return the winning player
-     */
-    private Player playTrick() {
-
-        int i = 0;//find index of current player
-        for (i = 0; i < 4; i++) {
-            if (currentPlayer == players[i]) {
-                break;
-            }
-        }
-
-        //create new trick
-        currentTrick = new Trick(leadDominoConsole(), trump);
-
-        //take 3 subsequent turns
-        currentPlayer = players[(i + 1) % 4];
-        currentTrick.playDomino(playTurnConsole());
-        currentPlayer = players[(i + 2) % 4];
-        currentTrick.playDomino(playTurnConsole());
-        currentPlayer = players[(i + 3) % 4];
-        currentTrick.playDomino(playTurnConsole());
-
-        //add points for trick to the winners points for the round
-        if (currentTrick.getWinner().getTeam() == team1) {
-            team1.addPoints(currentTrick.getPoints() + 1);
-            return currentTrick.getWinner();
-        } else {
-            team2.addPoints(currentTrick.getPoints() + 1);
-            return currentTrick.getWinner();
-        }
-    }
-
-    /**
      * asks given player which domino they would like to play and returns that domino
      *
      * @return the domino selected by the current player
      */
-    private Domino playTurnConsole() {
+    public static Domino playTurnConsole(Round round) {
+        Trick currentTrick = round.getCurrentTrick();
+
+        Player currentPlayer = round.getCurrentPlayer();
+
         Scanner input = new Scanner(System.in);
 
         //print whos turn it is and then wait for input to show hand
         clear();
-        printGameInfo();
+        printGameInfo(round);
         System.out.println(currentPlayer.getName() + "'s turn.");
         printLines(1);
         System.out.println("Led Suit: " + currentTrick.getLedSuit());
@@ -385,7 +214,7 @@ public class Round {
 
         //print whos turn it is and show hand
         clear();
-        printGameInfo();
+        printGameInfo(round);
         System.out.println(currentPlayer.getName() + "'s turn.");
         printLines(1);
         System.out.println("Led Suit: " + currentTrick.getLedSuit());
@@ -418,8 +247,8 @@ public class Round {
             int i = input.nextInt();
 
             if (i == 0) {//if they want to show round history
-                displayRoundHistory();
-                printGameInfo();
+                displayRoundHistory(round);
+                printGameInfo(round);
                 System.out.println(currentPlayer.getName() + "'s turn.");
                 printLines(1);
                 System.out.println(currentTrick.toString());
@@ -453,12 +282,14 @@ public class Round {
      *
      * @return the domino they choose.
      */
-    private Domino leadDominoConsole() {
+    public static Domino leadDominoConsole(Round round) {
+        Player currentPlayer = round.getCurrentPlayer();
+
         Scanner input = new Scanner(System.in);
 
         //print whos turn it is and then wait for input to show hand
         clear();
-        printGameInfo();
+        printGameInfo(round);
         System.out.println(currentPlayer.getName() + "'s turn.");
         printLines(1);
         System.out.println("Press enter to show hand...");
@@ -466,7 +297,7 @@ public class Round {
 
         //print whos turn it is and show hand
         clear();
-        printGameInfo();
+        printGameInfo(round);
         System.out.println(currentPlayer.getName() + "'s turn.");
         printLines(5);
         printHand(currentPlayer);
@@ -498,7 +329,8 @@ public class Round {
             int i = input.nextInt();
             input.nextLine();
             if (i == 0) {//if they want to show round history
-                displayRoundHistory();
+                displayRoundHistory(round);
+                printGameInfo(round);
                 printHand(currentPlayer);
                 System.out.println(currentPlayer.getName() + "'s turn.");
                 printLines(1);
@@ -514,17 +346,19 @@ public class Round {
             }
             acceptableInput = true;
         }
-
         return chosenDomino;
     }
-
 
     /**
      * print out round details and await response
      */
-    private void displayRoundHistory() {
+    public static void displayRoundHistory(Round round) {
         clear();
-        printGameInfo();
+        printGameInfo(round);
+
+        ArrayList<Trick> tricks = round.getTricks();
+        Team team1 = round.getTeams().get(0);
+        Team team2 = round.getTeams().get(1);
 
         System.out.println("Trick History:");
         System.out.println("Led  Trick              Winner");
@@ -540,30 +374,51 @@ public class Round {
         System.out.println("Press enter to go back...");
         input.nextLine();
         clear();
-
     }
 
     /**
      * print out game info
      */
-    private void printGameInfo() {
+    public static void printGameInfo(Round round) {
+        ArrayList<Player> players = round.getPlayers();
+        Player p1 = players.get(0);
+        Player p2 = players.get(1);
+        Player p3 = players.get(2);
+        Player p4 = players.get(3);
+
+        ArrayList<Team> teams = round.getTeams();
+        Team team1 = teams.get(0);
+        Team team2 = teams.get(1);
+
+        int trump = round.getTrump();
+
         System.out.println("Team 1: " + team1.getPlayers().get(0).getName() + " " + team1.getPlayers().get(1).getName());
         System.out.println("Team 1: " + team2.getPlayers().get(0).getName() + " " + team2.getPlayers().get(1).getName());
         System.out.println("Turn order: " + p1.getName() + " " + p2.getName() + " " + p3.getName() + " " + p4.getName());
         printLines(1);
-        printWinnerStatement();
+        printWinnerStatement(round);
         System.out.println("Trump: " + trump);
         printLines(1);
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         printLines(3);
     }
 
-
     /**
      * prints out a statement regarding the winner of the bid
      */
-    public void printWinnerStatement() {
+    public static void printWinnerStatement(Round round) {
+        Player bidWinner = round.getBidWinner();
+        int bid = round.getBid();
         System.out.println("Team " + bidWinner.getTeam().toString() + " (" + bidWinner.toString() + ") won the bid for " + bid);
+    }
+
+    /**
+     * printHand() prints the hand of a given player
+     *
+     * @param player player whose hand you want to print
+     */
+    public static void printHand(Player player) {
+        System.out.println(player.getHand());
     }
 
     /**
@@ -571,7 +426,7 @@ public class Round {
      *
      * @param numLines number of lines to print
      */
-    private void printLines(int numLines) {
+    public static void printLines(int numLines) {
         for (int i = 0; i < numLines; i++) {
             System.out.println();
         }
@@ -580,11 +435,9 @@ public class Round {
     /**
      * clears the console
      */
-    private void clear() {
+    public static void clear() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
         ;
     }
-
-
 }

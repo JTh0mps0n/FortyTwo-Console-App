@@ -1,4 +1,7 @@
-package fortytwo.app;
+package fortytwo.Model;
+
+import fortytwo.Controller.*;
+import fortytwo.View.*;
 
 public class Game {
     private Player p1;

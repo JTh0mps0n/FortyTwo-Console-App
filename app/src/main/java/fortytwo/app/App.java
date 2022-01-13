@@ -5,6 +5,10 @@ package fortytwo.app;
 
 
 import java.util.ArrayList;
+import fortytwo.Model.*;
+import fortytwo.Controller.*;
+import fortytwo.View.*;
+
 
 public class App {
     public static void main(String[] args) {
