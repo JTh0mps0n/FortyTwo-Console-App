@@ -7,6 +7,8 @@ import java.util.Scanner;
 
 public class View {
 
+    public View(){}
+
     /**
      * getPlayersBidConsole() gets the players bid through console input.
      * Helper function for doBidding()
@@ -19,7 +21,7 @@ public class View {
      * @param round      the round for which this is being called for
      * @return the bid made by the player
      */
-    public static int getPlayersBidConsole(Player player, int playerNum, int[] bids, int winningBid, boolean dumped, Round round) {
+    public int getPlayersBidConsole(Player player, int playerNum, int[] bids, int winningBid, boolean dumped, Round round) {
         Scanner input = new Scanner(System.in);
 
         //show whos turn it is to bid and hide hand
@@ -96,7 +98,7 @@ public class View {
      * @param winner     winner of the bid
      * @param winningBid winning bid
      */
-    public static void displayBidWinnerConsole(Player winner, int winningBid) {
+    public void displayBidWinnerConsole(Player winner, int winningBid) {
         clear();
         System.out.println(winner.getName() + " won the bid for " + winningBid + "!\n");
 
@@ -113,7 +115,7 @@ public class View {
      * @param bids  current bids of all players
      * @param round the round for which this is being called for
      */
-    public static void printBids(int[] bids, Round round) {
+    public void printBids(int[] bids, Round round) {
         ArrayList<Player> players = round.getPlayers();
 
         System.out.println("BIDS:");
@@ -135,7 +137,7 @@ public class View {
      *
      * @param winner the winner of the bid
      */
-    public static int getTrumpsConsole(Player winner) {
+    public int getTrumpsConsole(Player winner) {
         int trump = -1;
 
         Scanner input = new Scanner(System.in);
@@ -196,7 +198,7 @@ public class View {
      * @param round the round for which this is being called for
      * @return the domino selected by the current player
      */
-    public static Domino playTurnConsole(Round round) {
+    public Domino playTurnConsole(Round round) {
         Trick currentTrick = round.getCurrentTrick();
 
         Player currentPlayer = round.getCurrentPlayer();
@@ -286,7 +288,7 @@ public class View {
      * @param round the round for which this is being called for
      * @return the domino they choose.
      */
-    public static Domino leadDominoConsole(Round round) {
+    public Domino leadDominoConsole(Round round) {
         Player currentPlayer = round.getCurrentPlayer();
 
         Scanner input = new Scanner(System.in);
@@ -357,7 +359,7 @@ public class View {
      *
      * @param round the round for which this is being called for
      */
-    public static void displayRoundHistory(Round round) {
+    public void displayRoundHistory(Round round) {
         clear();
         printGameInfo(round);
 
@@ -386,7 +388,7 @@ public class View {
      *
      * @param round the round for which this is being called for
      */
-    public static void printGameInfo(Round round) {
+    public void printGameInfo(Round round) {
         ArrayList<Player> players = round.getPlayers();
         Player p1 = players.get(0);
         Player p2 = players.get(1);
@@ -415,7 +417,7 @@ public class View {
      *
      * @param round the round for which this is being called for
      */
-    public static void printWinnerStatement(Round round) {
+    public void printWinnerStatement(Round round) {
         Player bidWinner = round.getBidWinner();
         int bid = round.getBid();
         System.out.println("Team " + bidWinner.getTeam().toString() + " (" + bidWinner.toString() + ") won the bid for " + bid);
@@ -426,7 +428,7 @@ public class View {
      *
      * @param player player whose hand you want to print
      */
-    public static void printHand(Player player) {
+    public void printHand(Player player) {
         System.out.println(player.getHand());
     }
 
@@ -435,7 +437,7 @@ public class View {
      *
      * @param numLines number of lines to print
      */
-    public static void printLines(int numLines) {
+    public void printLines(int numLines) {
         for (int i = 0; i < numLines; i++) {
             System.out.println();
         }
@@ -444,7 +446,7 @@ public class View {
     /**
      * clears the console
      */
-    public static void clear() {
+    public void clear() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
         ;

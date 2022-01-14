@@ -23,6 +23,7 @@ public class App {
         players.add(p3);
         players.add(p4);
 
-        GameController.playRound(players);
+        GameController gc = new GameController();
+        gc.playRound(players);
     }
 }

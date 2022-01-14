@@ -8,13 +8,18 @@ import java.util.Collections;
 
 public class GameController {
 
+    private View view;
+
+    public GameController(){
+        view = new View();
+    }
 
     /**
      * playRound() plays a full round of forty-two
      *
      * @param players the players used to create the round object (4)
      */
-    public static void playRound(ArrayList<Player> players) {
+    public void playRound(ArrayList<Player> players) {
         Round round = new Round(players);
         //generate hands
         generateHands(round);
@@ -23,7 +28,7 @@ public class GameController {
         round.setCurrentPlayer(doBidding(round));
 
         //ask user for trumps and assign the value to trump
-        round.setTrump(View.getTrumpsConsole(round.getCurrentPlayer()));
+        round.setTrump(view.getTrumpsConsole(round.getCurrentPlayer()));
 
         //play 7 tricks
         for (int i = 0; i < 7; i++) {
@@ -37,7 +42,7 @@ public class GameController {
      *
      * @param round the round for which this is being called for
      */
-    private static void generateHands(Round round) {
+    private void generateHands(Round round) {
         //shuffle all dominoes
         Collections.shuffle(round.getAllDominoes());
 
@@ -65,9 +70,7 @@ public class GameController {
      * @param round the round for which this is being called for
      * @return winner of the bid
      */
-    private static Player doBidding(Round round) {
-
-
+    private Player doBidding(Round round) {
         int[] bids = {-1, -1, -1, -1};   //players bids in player order 1,2,3,4
         int winningBid = 29; //winning bid number
         round.setBidWinner(round.getPlayers().get(0));//winner of the bid
@@ -83,7 +86,7 @@ public class GameController {
             }
 
             //get bid
-            bids[i] = View.getPlayersBidConsole(currentPlayer, i + 1, bids, winningBid, dumped, round);//get current players bid through console
+            bids[i] = view.getPlayersBidConsole(currentPlayer, i + 1, bids, winningBid, dumped, round);//get current players bid through console
 
             //check for new winner
             if (bids[i] > winningBid) {
@@ -93,7 +96,7 @@ public class GameController {
         }
 
         //display winner to console
-        View.displayBidWinnerConsole(round.getBidWinner(), winningBid);
+        view.displayBidWinnerConsole(round.getBidWinner(), winningBid);
 
         round.setBid(winningBid);
         return round.getBidWinner();
@@ -105,7 +108,7 @@ public class GameController {
      * @param round the round for which this is being called for
      * @return the winning player
      */
-    private static Player playTrick(Round round) {
+    private Player playTrick(Round round) {
 
         int i = 0;//find index of current player
         for (i = 0; i < 4; i++) {
@@ -115,15 +118,15 @@ public class GameController {
         }
 
         //create new trick
-        round.setCurrentTrick(new Trick(View.leadDominoConsole(round), round.getTrump()));
+        round.setCurrentTrick(new Trick(view.leadDominoConsole(round), round.getTrump()));
 
         //take 3 subsequent turns
         round.setCurrentPlayer(round.getPlayers().get((i + 1) % 4));
-        round.getCurrentTrick().playDomino(View.playTurnConsole(round));
+        round.getCurrentTrick().playDomino(view.playTurnConsole(round));
         round.setCurrentPlayer(round.getPlayers().get((i + 2) % 4));
-        round.getCurrentTrick().playDomino(View.playTurnConsole(round));
+        round.getCurrentTrick().playDomino(view.playTurnConsole(round));
         round.setCurrentPlayer(round.getPlayers().get((i + 3) % 4));
-        round.getCurrentTrick().playDomino(View.playTurnConsole(round));
+        round.getCurrentTrick().playDomino(view.playTurnConsole(round));
 
         //add points for trick to the winners points for the round
         if (round.getCurrentTrick().getWinner().getTeam() == round.getTeams().get(0)) {
