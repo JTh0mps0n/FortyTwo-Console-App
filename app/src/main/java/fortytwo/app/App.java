@@ -5,9 +5,9 @@ package fortytwo.app;
 
 
 import java.util.ArrayList;
-import fortytwo.Model.*;
-import fortytwo.Controller.*;
-import fortytwo.View.*;
+import fortytwo.model.*;
+import fortytwo.controller.*;
+import fortytwo.view.*;
 
 
 public class App {

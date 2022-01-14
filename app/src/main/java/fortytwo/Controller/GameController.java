@@ -1,7 +1,7 @@
-package fortytwo.Controller;
+package fortytwo.controller;
 
-import fortytwo.View.View;
-import fortytwo.Model.*;
+import fortytwo.view.View;
+import fortytwo.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

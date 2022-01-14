@@ -1,8 +1,8 @@
-package fortytwo.Model;
+package fortytwo.model;
 
 import java.util.*;
-import fortytwo.View.*;
-import fortytwo.Controller.*;
+import fortytwo.view.*;
+import fortytwo.controller.*;
 
 public class Round {
     private Player p1;                       //player 1 (team 1)

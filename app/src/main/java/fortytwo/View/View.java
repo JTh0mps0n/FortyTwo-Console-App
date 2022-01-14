@@ -1,6 +1,6 @@
-package fortytwo.View;
+package fortytwo.view;
 
-import fortytwo.Model.*;
+import fortytwo.model.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
