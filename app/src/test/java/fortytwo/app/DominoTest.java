@@ -79,8 +79,8 @@ class DominoTest {
         assertFalse(doubleSix.isBeatBy(sixFour, 1, 6));
         assertTrue(doubleSix.isBeatBy(sixFour, 1, 4));
         assertFalse(doubleFour.isBeatBy(sixFour, 1, 4));
-        assertTrue(doubleSix.isBeatBy(aceDuece, 2, 6));
-        assertTrue(doubleFour.isBeatBy(threeAce, 1, 4));
+        assertTrue(doubleSix.isBeatBy(aceDuece, 6, 2));
+        assertTrue(doubleFour.isBeatBy(threeAce, 4, 1));
         assertTrue(doubleFour.isBeatBy(doubleTwo, 1, 2));
 
     }
