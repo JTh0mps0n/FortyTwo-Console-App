@@ -23,7 +23,14 @@ public class App {
         players.add(p3);
         players.add(p4);
 
+        Team team1 = new Team(p1, p3, 1);
+        Team team2 = new Team(p2, p4, 1);
+        ArrayList<Team> teams = new ArrayList<Team>();
+        teams.add(team1);
+        teams.add(team2);
+
         GameController gc = new GameController();
-        gc.playRound(players);
+        Game game = gc.createGame();
+        gc.playGame(game);
     }
 }

@@ -7,38 +7,93 @@ import java.util.Scanner;
 
 public class View {
 
-    public View(){}
+    public View() {
+    }
+
+    public void printStartScreen() {
+        clear();
+        printGameTitle();
+        printLines(3);
+        waitForInput("Press enter to play...");
+    }
+
+    public ArrayList<Player> getNewPlayers() {
+        Scanner input = new Scanner(System.in);
+        clear();
+        printGameTitle();
+        printLines(3);
+        System.out.print("Enter Team 1, Player 1 Name: ");
+        String name1 = input.nextLine();
+        System.out.print("Enter Team 1, Player 2 Name: ");
+        String name3 = input.nextLine();
+        System.out.print("Enter Team 2, Player 1 Name: ");
+        String name2 = input.nextLine();
+        System.out.print("Enter Team 2, Player 2 Name: ");
+        String name4 = input.nextLine();
+
+        Player p1 = new Player(name1);
+        Player p2 = new Player(name2);
+        Player p3 = new Player(name3);
+        Player p4 = new Player(name4);
+
+        ArrayList<Player> players = new ArrayList<Player>();
+        players.add(p1);
+        players.add(p2);
+        players.add(p3);
+        players.add(p4);
+
+        return players;
+    }
+
+    public void displayRoundEnding(Round round){
+        clear();
+        printGameInfo(round.getGame());
+        displayRoundHistory(round, false);
+        printLines(3);
+        Team winner = round.getWinner();
+        System.out.println("Team " + winner.toString() + "(" + winner.getPlayers().get(0).toString() + " " +
+                winner.getPlayers().get(1).toString() + ") won the round with " + winner.getPoints() + " points!");
+        printLines(3);
+        waitForInput("Press enter to continue...");
+    }
+
+    public void displayGameEnding(Game game){
+        clear();
+        printGameInfo(game);
+        printLines(3);
+        System.out.println("Team " + game.getWinner().toString() + "(" + game.getWinner().getPlayers().get(0) + " and " +
+                game.getWinner().getPlayers().get(1) + ") won!");
+        printLines(3);
+    }
 
     /**
      * getPlayersBidConsole() gets the players bid through console input.
      * Helper function for doBidding()
      *
      * @param player     current player bidding
-     * @param playerNum  number of player bidding
      * @param bids       current bids of all players
      * @param winningBid bid currently winning
      * @param dumped     boolean representing if the current player is forced to bid
      * @param round      the round for which this is being called for
      * @return the bid made by the player
      */
-    public int getPlayersBidConsole(Player player, int playerNum, int[] bids, int winningBid, boolean dumped, Round round) {
+    public int getPlayersBidConsole(Player player, int[] bids, int winningBid, boolean dumped, Round round) {
         Scanner input = new Scanner(System.in);
 
         //show whos turn it is to bid and hide hand
         clear();
         System.out.println(player.getName() + "'s turn to bid.");
         printLines(1);
-        System.out.println("Player " + playerNum + ", " + player.getName() + "'s hand: ");
+        System.out.println(player.getName() + "'s hand: ");
         printLines(2);
-        System.out.println("Press enter to view hand...");
-        input.nextLine();//wait for input to show hand
+        waitForInput();
 
         //show whos turn it is to bid and show hand
         clear();
         System.out.println(player.getName() + "'s turn to bid.");
         printLines(1);
-        System.out.println("Player " + playerNum + ", " + player.getName() + "'s hand: ");
-        printHand(player);
+        System.out.println(player.getName() + "'s hand: ");
+        printHand(player, false);
         printLines(1);
 
         //display bids from all players
@@ -104,8 +159,7 @@ public class View {
 
         Scanner input = new Scanner(System.in);
 
-        System.out.println("Press enter to continue...");
-        input.nextLine();//wait for input to continue
+        waitForInput("Press enter to continue...");
     }
 
     /**
@@ -121,13 +175,13 @@ public class View {
         System.out.println("BIDS:");
         for (int i = 0; i < bids.length; i++) {
             if (bids[i] == -1) {
-                System.out.println(players.get(i).getName() + "'s bid: YOUR TURN TO BID");
+                System.out.println(players.get((i + round.getGame().getRoundsPlayed()) % 4).getName() + "'s bid: YOUR TURN TO BID");
                 break;
             }
             if (bids[i] == 0) {
-                System.out.println(players.get(i).getName() + "'s bid: passed");
+                System.out.println(players.get((i + round.getGame().getRoundsPlayed()) % 4).getName() + "'s bid: passed");
             } else {
-                System.out.println(players.get(i).getName() + "'s bid: " + bids[i]);
+                System.out.println(players.get((i + round.getGame().getRoundsPlayed()) % 4).getName() + "'s bid: " + bids[i]);
             }
         }
     }
@@ -148,15 +202,14 @@ public class View {
         printLines(1);
         System.out.println(winner.getName() + "'s Hand:");
         printLines(2);
-        System.out.println("Press enter to view hand...");
-        input.nextLine();//wait for input to show hand
+        waitForInput();
 
         //show whos turn it is and show hand
         clear();
         System.out.println(winner.getName() + "'s turn to pick trumps:");
         printLines(1);
         System.out.println(winner.getName() + "'s Hand:");
-        printHand(winner);
+        printHand(winner, false);
         printLines(1);
 
         boolean acceptableInput = false; // to validate input
@@ -207,26 +260,25 @@ public class View {
 
         //print whos turn it is and then wait for input to show hand
         clear();
-        printGameInfo(round);
+        printRoundInfo(round);
         System.out.println(currentPlayer.getName() + "'s turn.");
         printLines(1);
         System.out.println("Led Suit: " + currentTrick.getLedSuit());
         printLines(2);
         System.out.println(currentTrick.toString());
         printLines(3);
-        System.out.println("Press enter to show hand...");
-        input.nextLine();//wait for input to show hand
+        waitForInput();
 
         //print whos turn it is and show hand
         clear();
-        printGameInfo(round);
+        printRoundInfo(round);
         System.out.println(currentPlayer.getName() + "'s turn.");
         printLines(1);
         System.out.println("Led Suit: " + currentTrick.getLedSuit());
         printLines(2);
         System.out.println(currentTrick.toString());
         printLines(3);
-        printHand(currentPlayer);
+        printHand(currentPlayer, true);
 
         boolean acceptableInput = false;
         Domino chosenDomino = null;
@@ -252,13 +304,14 @@ public class View {
             int i = input.nextInt();
 
             if (i == 0) {//if they want to show round history
-                displayRoundHistory(round);
-                printGameInfo(round);
+                displayRoundHistory(round, true);
+                clear();
+                printRoundInfo(round);
                 System.out.println(currentPlayer.getName() + "'s turn.");
                 printLines(1);
                 System.out.println(currentTrick.toString());
                 printLines(1);
-                printHand(currentPlayer);
+                printHand(currentPlayer, true);
                 continue;
             }
 
@@ -295,18 +348,17 @@ public class View {
 
         //print whos turn it is and then wait for input to show hand
         clear();
-        printGameInfo(round);
+        printRoundInfo(round);
         System.out.println(currentPlayer.getName() + "'s turn.");
         printLines(1);
-        System.out.println("Press enter to show hand...");
-        input.nextLine();//wait for input to show hand
+        waitForInput();
 
         //print whos turn it is and show hand
         clear();
-        printGameInfo(round);
+        printRoundInfo(round);
         System.out.println(currentPlayer.getName() + "'s turn.");
         printLines(5);
-        printHand(currentPlayer);
+        printHand(currentPlayer, true);
 
 
         boolean acceptableInput = false;
@@ -335,11 +387,12 @@ public class View {
             int i = input.nextInt();
             input.nextLine();
             if (i == 0) {//if they want to show round history
-                displayRoundHistory(round);
-                printGameInfo(round);
+                displayRoundHistory(round, true);
+                clear();
+                printRoundInfo(round);
                 System.out.println(currentPlayer.getName() + "'s turn.");
                 printLines(1);
-                printHand(currentPlayer);
+                printHand(currentPlayer, true);
                 continue;
             }
 
@@ -359,9 +412,11 @@ public class View {
      *
      * @param round the round for which this is being called for
      */
-    public void displayRoundHistory(Round round) {
+    public void displayRoundHistory(Round round, boolean stallGame) {
         clear();
-        printGameInfo(round);
+        printGameInfo(round.getGame());
+        printLines(1);
+        printRoundInfo(round);
 
         ArrayList<Trick> tricks = round.getTricks();
         Team team1 = round.getTeams().get(0);
@@ -377,10 +432,18 @@ public class View {
         System.out.println("Team 1 | Team 2");
         System.out.println("   " + team1.getPoints() + "       " + team2.getPoints());
         printLines(2);
-        Scanner input = new Scanner(System.in);
-        System.out.println("Press enter to go back...");
-        input.nextLine();
-        clear();
+        if(stallGame) {
+            waitForInput("Press enter to go back...");
+        }
+    }
+
+    public void printGameInfo(Game game) {
+        printGameTitle();
+        printLines(1);
+        System.out.println("Team 1 - " + game.getTeam1().getPlayers().get(0) + " " + game.getTeam1().getPlayers().get(1) + ": " + game.getTeam1Score());
+        System.out.println("Team 2 - " + game.getTeam2().getPlayers().get(0) + " " + game.getTeam2().getPlayers().get(1) + ": " + game.getTeam2Score());
+        printLines(1);
+        System.out.println("First team to " + game.getPlayTo() + " marks wins!");
     }
 
     /**
@@ -388,7 +451,7 @@ public class View {
      *
      * @param round the round for which this is being called for
      */
-    public void printGameInfo(Round round) {
+    public void printRoundInfo(Round round) {
         ArrayList<Player> players = round.getPlayers();
         Player p1 = players.get(0);
         Player p2 = players.get(1);
@@ -405,11 +468,27 @@ public class View {
         System.out.println("Team 1: " + team2.getPlayers().get(0).getName() + " " + team2.getPlayers().get(1).getName());
         System.out.println("Turn order: " + p1.getName() + " " + p2.getName() + " " + p3.getName() + " " + p4.getName());
         printLines(1);
-        printWinnerStatement(round);
+        printBidWinnerStatement(round);
         System.out.println("Trump: " + trump);
         printLines(1);
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        printTildes();
         printLines(3);
+    }
+
+    private void printTildes() {
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    }
+
+    public void waitForInput() {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Press enter to show hand...");
+        input.nextLine();//wait for input to show hand
+    }
+
+    public void waitForInput(String message) {
+        Scanner input = new Scanner(System.in);
+        System.out.print(message);
+        input.nextLine();//wait for input to show hand
     }
 
     /**
@@ -417,7 +496,7 @@ public class View {
      *
      * @param round the round for which this is being called for
      */
-    public void printWinnerStatement(Round round) {
+    public void printBidWinnerStatement(Round round) {
         Player bidWinner = round.getBidWinner();
         int bid = round.getBid();
         System.out.println("Team " + bidWinner.getTeam().toString() + " (" + bidWinner.toString() + ") won the bid for " + bid);
@@ -428,7 +507,11 @@ public class View {
      *
      * @param player player whose hand you want to print
      */
-    public void printHand(Player player) {
+    public void printHand(Player player, boolean numbered) {
+        if(numbered){
+            System.out.println(player.getHand().toStringNumbered());
+            return;
+        }
         System.out.println(player.getHand());
     }
 
@@ -443,12 +526,19 @@ public class View {
         }
     }
 
+    private void printGameTitle() {
+        printTildes();
+        printLines(1);
+        System.out.println("                                FORTY TWO");
+        printLines(1);
+        printTildes();
+    }
+
     /**
      * clears the console
      */
     public void clear() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
-        ;
     }
 }

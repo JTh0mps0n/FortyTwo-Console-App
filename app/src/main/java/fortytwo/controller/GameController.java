@@ -14,13 +14,41 @@ public class GameController {
         view = new View();
     }
 
+    public Game createGame(){
+        view.printStartScreen();
+
+        ArrayList<Player> players = view.getNewPlayers();
+        ArrayList<Team> teams = new ArrayList<Team>();
+        Team team1 = new Team(players.get(0), players.get(2), 1);
+        Team team2 = new Team(players.get(1), players.get(3), 2);
+        teams.add(team1);
+        teams.add(team2);
+
+        Game game = new Game(players, teams);
+
+        view.clear();
+        view.printGameInfo(game);
+        view.printLines(3);
+        view.waitForInput("Press enter to continue...");
+
+        return game;
+    }
+
+    public void playGame(Game game){
+        while(game.getTeam1Score() < game.getPlayTo() && game.getTeam2Score() < game.getPlayTo()){
+            Team winner = playRound(game);
+            game.addWinner(winner, 1);
+        }
+        view.displayGameEnding(game);
+    }
+
     /**
      * playRound() plays a full round of forty-two
      *
-     * @param players the players used to create the round object (4)
+     * @param game the game this round is being played in
      */
-    public void playRound(ArrayList<Player> players) {
-        Round round = new Round(players);
+    public Team playRound(Game game) {
+        Round round = new Round(game);
         //generate hands
         generateHands(round);
 
@@ -35,6 +63,8 @@ public class GameController {
             round.setCurrentPlayer(playTrick(round));//update current player to winner of this trick
             round.getTricks().add(round.getCurrentTrick());//add trick to history of tricks
         }
+        view.displayRoundEnding(round);
+        return round.getWinner();
     }
 
     /**
@@ -77,7 +107,7 @@ public class GameController {
 
         Player currentPlayer;
         for (int i = 0; i < 4; i++) {
-            currentPlayer = round.getPlayers().get(i);
+            currentPlayer = round.getPlayers().get((i + round.getGame().getRoundsPlayed()) % 4);
 
             //check for last player needing to bid
             boolean dumped = false;
@@ -86,12 +116,12 @@ public class GameController {
             }
 
             //get bid
-            bids[i] = view.getPlayersBidConsole(currentPlayer, i + 1, bids, winningBid, dumped, round);//get current players bid through console
+            bids[i] = view.getPlayersBidConsole(currentPlayer, bids, winningBid, dumped, round);//get current players bid through console
 
             //check for new winner
             if (bids[i] > winningBid) {
                 winningBid = bids[i];
-                round.setBidWinner(round.getPlayers().get(i));
+                round.setBidWinner(round.getPlayers().get((i + round.getGame().getRoundsPlayed()) % 4));
             }
         }
 
@@ -133,7 +163,7 @@ public class GameController {
             round.getTeams().get(0).addPoints(round.getCurrentTrick().getPoints() + 1);
             return round.getCurrentTrick().getWinner();
         } else {
-            round.getTeams().get(0).addPoints(round.getCurrentTrick().getPoints() + 1);
+            round.getTeams().get(1).addPoints(round.getCurrentTrick().getPoints() + 1);
             return round.getCurrentTrick().getWinner();
         }
     }

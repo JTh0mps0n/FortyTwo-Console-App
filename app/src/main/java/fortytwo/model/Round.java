@@ -20,59 +20,22 @@ public class Round {
     private Player currentPlayer;            //current player who should be playing through console
     private Trick currentTrick;              //current trick being played
     private ArrayList<Trick> tricks;         //list of tricks played throughout this round
+    private Game game;                       //game this round belongs to
+
 
     /**
      * Round Constructor taking in the 4 players playing
      *
-     * @param p1 player 1 (team 1)
-     * @param p2 player 2 (team 2)
-     * @param p3 player 3 (team 1)
-     * @param p4 player 4 (team 2)
+     * @param game game to be used to create this round
      */
-    public Round(Player p1, Player p2, Player p3, Player p4) {
+    public Round(Game game) {
+        this.game = game;
+
         //set players and add them to player array
-        this.p1 = p1;
-        this.p2 = p2;
-        this.p3 = p3;
-        this.p4 = p4;
-        players = new ArrayList<Player>();
-        players.add(p1);
-        players.add(p2);
-        players.add(p3);
-        players.add(p4);
-
-        //create teams
-        team1 = new Team(p1, p3, 1);
-        team2 = new Team(p2, p4, 2);
-        teams = new ArrayList<Team>();
-        teams.add(team1);
-        teams.add(team2);
-
-        //initialize dominoes
-        allDominoes = new ArrayList<Domino>();
-        for (int i = 0; i <= 6; i++) {
-            for (int j = i; j <= 6; j++) {
-                Domino current = new Domino(i, j);
-                allDominoes.add(current);
-            }
-        }
-
-        //setup for tricks
-        currentTrick = null;
-        tricks = new ArrayList<Trick>();
-    }
-
-    /**
-     * Round Constructor taking in the 4 players playing
-     *
-     * @param players ArrayList of players
-     */
-    public Round(ArrayList<Player> players) {
-        //set players and add them to player array
-        this.p1 = players.get(0);
-        this.p2 = players.get(1);
-        this.p3 = players.get(2);
-        this.p4 = players.get(3);
+        this.p1 = game.getPlayers().get(0);
+        this.p2 = game.getPlayers().get(1);
+        this.p3 = game.getPlayers().get(2);
+        this.p4 = game.getPlayers().get(3);
         this.players = new ArrayList<Player>();
         this.players.add(p1);
         this.players.add(p2);
@@ -80,11 +43,13 @@ public class Round {
         this.players.add(p4);
 
         //create teams
-        team1 = new Team(p1, p3, 1);
-        team2 = new Team(p2, p4, 2);
-        teams = new ArrayList<Team>();
+        team1 = game.getTeam1();
+        team2 = game.getTeam2();
+        this.teams = new ArrayList<Team>();
         teams.add(team1);
         teams.add(team2);
+        team1.resetTeamForRound();
+        team2.resetTeamForRound();
 
         //initialize dominoes
         allDominoes = new ArrayList<Domino>();
@@ -150,6 +115,22 @@ public class Round {
 
     public Trick getCurrentTrick() {
         return currentTrick;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public Team getWinner(){
+        if(bidWinner.getTeam().getPoints() >= bid){
+            return bidWinner.getTeam();
+        }
+        else{
+            if(bidWinner.getTeam() == team1){
+                return team2;
+            }
+            return team1;
+        }
     }
 
     public void setCurrentTrick(Trick currentTrick) {

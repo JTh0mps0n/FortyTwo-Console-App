@@ -93,6 +93,21 @@ public class Hand {
         return handStr;
     }
 
+    public String toStringNumbered(){
+        String handStr = "";
+        for (int i = 0; i < dominoes.size(); i++) {
+            handStr += dominoes.get(i).toString();
+            if (i != dominoes.size() - 1) {
+                handStr += " ";
+            }
+        }
+        handStr += "\n ";
+        for (int i = 0; i < dominoes.size(); i++) {
+            handStr += (i+1) + "   ";
+        }
+        return handStr;
+    }
+
     /**
      * returns whether the hand contains a domino of the given suit
      *
