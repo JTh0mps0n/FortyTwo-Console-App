@@ -31,10 +31,34 @@ public class View {
         System.out.print("Enter Team 2, Player 2 Name: ");
         String name4 = input.nextLine();
 
-        Player p1 = new Player(name1);
-        Player p2 = new Player(name2);
-        Player p3 = new Player(name3);
-        Player p4 = new Player(name4);
+        Player p1;
+        if(name1.equalsIgnoreCase("bot")){
+            p1 = new Player(name1, true);
+        }
+        else{
+            p1 = new Player(name1, false);
+        }
+        Player p2;
+        if(name2.equalsIgnoreCase("bot")){
+            p2 = new Player(name2, true);
+        }
+        else{
+            p2 = new Player(name2, false);
+        }
+        Player p3;
+        if(name3.equalsIgnoreCase("bot")){
+            p3 = new Player(name3, true);
+        }
+        else{
+            p3 = new Player(name3, false);
+        }
+        Player p4;
+        if(name4.equalsIgnoreCase("bot")){
+            p4 = new Player(name4, true);
+        }
+        else{
+            p4 = new Player(name4, false);
+        }
 
         ArrayList<Player> players = new ArrayList<Player>();
         players.add(p1);

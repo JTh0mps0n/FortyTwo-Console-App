@@ -3,6 +3,7 @@ package fortytwo.model;
 import java.util.ArrayList;
 
 public class Trick {
+    private Round round;                    //round this trick is a part of
     private int trump;                      //trump of the round
     private boolean trumped;                //if the trick has been trumped
     private int ledSuit;                    //suit led
@@ -20,8 +21,10 @@ public class Trick {
      *
      * @param ledDomino domino led
      * @param trump     trump of the round
+     * @param round     round this trick is a part of
      */
-    public Trick(Domino ledDomino, int trump) {
+    public Trick(Domino ledDomino, int trump, Round round) {
+        this.round = round;
         //set parameters to variables
         this.ledDomino = ledDomino;
         this.trump = trump;
@@ -64,6 +67,7 @@ public class Trick {
      * @return the winner of the trick
      * */
     public Player getWinner() {
+        updateWinner();
         return winner;
     }
 
@@ -76,6 +80,10 @@ public class Trick {
         return dominoes.size();
     }
 
+    public Domino getWinningDomino() {
+        return winningDomino;
+    }
+
     /**
      * get the suit led in this trick
      *
@@ -83,6 +91,18 @@ public class Trick {
      * */
     public int getLedSuit() {
         return ledSuit;
+    }
+
+    public Round getRound() {
+        return round;
+    }
+
+    public int getTrump() {
+        return trump;
+    }
+
+    public boolean isTrumped() {
+        return trumped;
     }
 
     /**

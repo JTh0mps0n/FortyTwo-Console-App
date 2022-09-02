@@ -1,6 +1,7 @@
 package fortytwo.model;
 
-import java.util.ArrayList;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class Hand {
     private ArrayList<Domino> dominoes;     //dominoes in this hand
@@ -153,4 +154,97 @@ public class Hand {
 
         return subHand;
     }
+
+    public int getNumInSuit(int suit){
+        int num = 0;
+        for (Domino d: dominoes) {
+            if(d.isSuit(suit)){
+                num++;
+            }
+        }
+
+        return num;
+    }
+
+    /**
+     * Reorders the hand based on the trump
+     *
+     * @param trump the trump to reorder around 0-6, -1 if no trump
+     * */
+    public void reorder(int trump){
+        ArrayList<Domino> newHand = new ArrayList<>();
+        HashSet<Domino> added = new HashSet<>();
+        HashMap<Integer, Integer> frequency = new HashMap<>();
+
+        for (int i = 0; i < 7; i++) {
+            frequency.put(i, 0);
+        }
+        for (Domino domino: dominoes) {
+            if(domino.isDouble())
+                frequency.put(domino.highestPip(), frequency.get(domino.highestPip()) + 1);
+            else{
+                frequency.put(domino.highestPip(), frequency.get(domino.highestPip()) + 1);
+                frequency.put(domino.otherSide(domino.highestPip()), frequency.get(domino.otherSide(domino.highestPip())) + 1);
+            }
+        }
+
+        ArrayList<Domino> currentSuitList = new ArrayList<>();
+        int currentSuit = 0;
+
+        if(trump >= 0 && trump <= 6){
+            currentSuit = trump;
+            for (Domino d: dominoes) {
+                if(d.isSuit(trump)) currentSuitList.add(d);
+            }
+            while(!currentSuitList.isEmpty()){
+                Domino max = currentSuitList.get(0);
+                for (int i = 0; i < currentSuitList.size(); i++) {
+                    if(max.isBeatBy(currentSuitList.get(i), currentSuit, currentSuit)){
+                        max = currentSuitList.get(i);
+                    }
+                }
+                added.add(max);
+                newHand.add(max);
+                if(max.isDouble())
+                    frequency.put(max.highestPip(), frequency.get(max.highestPip()) - 1);
+                else{
+                    frequency.put(max.highestPip(), frequency.get(max.highestPip()) + 1);
+                    frequency.put(max.otherSide(max.highestPip()), frequency.get(max.otherSide(max.highestPip())) + 1);
+                }
+                currentSuitList.remove(max);
+            }
+        }
+        while(added.size() != dominoes.size()){
+            int maxValInMap = Collections.max(frequency.values());
+            for (int i = 0; i < 7; i++) {
+                if(frequency.get(i) == maxValInMap){
+                    currentSuit = i;
+                }
+            }
+
+            for (Domino d: dominoes) {
+                if(d.isSuit(currentSuit)) currentSuitList.add(d);
+            }
+            while(!currentSuitList.isEmpty()){
+                Domino max = currentSuitList.get(0);
+                for (int i = 0; i < currentSuitList.size(); i++) {
+                    if(max.isBeatBy(currentSuitList.get(i), currentSuit, currentSuit)){
+                        max = currentSuitList.get(i);
+                    }
+                }
+                added.add(max);
+                newHand.add(max);
+                if(max.isDouble())
+                    frequency.put(max.highestPip(), frequency.get(max.highestPip()) - 1);
+                else{
+                    frequency.put(max.highestPip(), frequency.get(max.highestPip()) + 1);
+                    frequency.put(max.otherSide(max.highestPip()), frequency.get(max.otherSide(max.highestPip())) + 1);
+                }
+                currentSuitList.remove(max);
+            }
+        }
+
+        dominoes = newHand;
+    }
+
 }

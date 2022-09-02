@@ -151,7 +151,7 @@ public class Domino {
      * @param suit the suit with which you don't want
      * @return the other side of the domino. Returns -1 if neither side is suit. Returns -2 if it's a double
      */
-    private int otherSide(int suit) {
+    public int otherSide(int suit) {
         if (!isSuit(suit)) {
             return -1;
         }
@@ -162,7 +162,16 @@ public class Domino {
             return pip2;
         }
         return pip1;
+    }
 
+    public int getRanking(int suit){
+        if(!isSuit(suit)){
+            return 1;
+        }
+        if(isDouble()){
+            return 9;
+        }
+        return otherSide(suit) + 2;
     }
 
     /**

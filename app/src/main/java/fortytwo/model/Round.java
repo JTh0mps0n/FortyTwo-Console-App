@@ -133,7 +133,25 @@ public class Round {
         }
     }
 
+    public ArrayList<Domino> getDominoesLeft(){
+        ArrayList<Domino> dominoesLeft = new ArrayList<Domino>();
+        for (int i = 0; i < players.size(); i++) {
+            Hand currentHand = players.get(i).getHand();
+            for (int j = 0; j < currentHand.getSize(); j++) {
+                dominoesLeft.add(currentHand.getDomino(j));
+            }
+        }
+        return dominoesLeft;
+    }
+
     public void setCurrentTrick(Trick currentTrick) {
         this.currentTrick = currentTrick;
+    }
+
+    public void reorderHands(){
+        p1.getHand().reorder(trump);
+        p2.getHand().reorder(trump);
+        p3.getHand().reorder(trump);
+        p4.getHand().reorder(trump);
     }
 }

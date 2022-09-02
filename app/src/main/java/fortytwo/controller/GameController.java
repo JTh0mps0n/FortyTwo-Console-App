@@ -9,12 +9,14 @@ import java.util.Collections;
 public class GameController {
 
     private View view;
+    private BotController botController;
 
-    public GameController(){
+    public GameController() {
         view = new View();
+        botController = new BotController();
     }
 
-    public Game createGame(){
+    public Game createGame() {
         view.printStartScreen();
 
         ArrayList<Player> players = view.getNewPlayers();
@@ -34,8 +36,8 @@ public class GameController {
         return game;
     }
 
-    public void playGame(Game game){
-        while(game.getTeam1Score() < game.getPlayTo() && game.getTeam2Score() < game.getPlayTo()){
+    public void playGame(Game game) {
+        while (game.getTeam1Score() < game.getPlayTo() && game.getTeam2Score() < game.getPlayTo()) {
             Team winner = playRound(game);
             game.addWinner(winner, 1);
         }
@@ -56,7 +58,14 @@ public class GameController {
         round.setCurrentPlayer(doBidding(round));
 
         //ask user for trumps and assign the value to trump
-        round.setTrump(view.getTrumpsConsole(round.getCurrentPlayer()));
+        if (round.getBidWinner().isBot()) {
+            round.setTrump(round.getBidWinner().getTrumpWanted());
+        }
+        else {
+            round.setTrump(view.getTrumpsConsole(round.getCurrentPlayer()));
+        }
+
+        round.reorderHands();
 
         //play 7 tricks
         for (int i = 0; i < 7; i++) {
@@ -85,13 +94,15 @@ public class GameController {
         //add dominoes to hands
         for (int i = 0; i < 7; i++) {
             hand1.addDomino(round.getAllDominoes().get(i));
-
             hand2.addDomino(round.getAllDominoes().get(i + 7));
-
             hand3.addDomino(round.getAllDominoes().get(i + 14));
-
             hand4.addDomino(round.getAllDominoes().get(i + 21));
         }
+
+        hand1.reorder(-1);
+        hand2.reorder(-1);
+        hand3.reorder(-1);
+        hand4.reorder(-1);
     }
 
     /**
@@ -116,11 +127,16 @@ public class GameController {
             }
 
             //get bid
-            bids[i] = view.getPlayersBidConsole(currentPlayer, bids, winningBid, dumped, round);//get current players bid through console
-
+            if (currentPlayer.isBot()) {
+                bids[i] = botController.getBid(round, currentPlayer, dumped);
+            }
+            else {
+                bids[i] = view.getPlayersBidConsole(currentPlayer, bids, winningBid, dumped, round);//get current players bid through console
+            }
             //check for new winner
             if (bids[i] > winningBid) {
                 winningBid = bids[i];
+                round.setBid(winningBid);
                 round.setBidWinner(round.getPlayers().get((i + round.getGame().getRoundsPlayed()) % 4));
             }
         }
@@ -148,15 +164,37 @@ public class GameController {
         }
 
         //create new trick
-        round.setCurrentTrick(new Trick(view.leadDominoConsole(round), round.getTrump()));
+        Trick trick;
+        if (round.getCurrentPlayer().isBot()) {
+            trick = new Trick(botController.getBestLead(round, round.getCurrentPlayer()), round.getTrump(), round);
+            round.setCurrentTrick(trick);
+        } else {
+            trick = new Trick(view.leadDominoConsole(round), round.getTrump(), round);
+            round.setCurrentTrick(trick);
+        }
+
 
         //take 3 subsequent turns
         round.setCurrentPlayer(round.getPlayers().get((i + 1) % 4));
-        round.getCurrentTrick().playDomino(view.playTurnConsole(round));
+        if (round.getCurrentPlayer().isBot()) {
+            trick.playDomino(botController.getBestDomino(trick, round.getCurrentPlayer()));
+        } else {
+            trick.playDomino(view.playTurnConsole(round));
+        }
+
         round.setCurrentPlayer(round.getPlayers().get((i + 2) % 4));
-        round.getCurrentTrick().playDomino(view.playTurnConsole(round));
+        if (round.getCurrentPlayer().isBot()) {
+            trick.playDomino(botController.getBestDomino(trick, round.getCurrentPlayer()));
+        } else {
+            trick.playDomino(view.playTurnConsole(round));
+        }
+
         round.setCurrentPlayer(round.getPlayers().get((i + 3) % 4));
-        round.getCurrentTrick().playDomino(view.playTurnConsole(round));
+        if (round.getCurrentPlayer().isBot()) {
+            trick.playDomino(botController.getBestDomino(trick, round.getCurrentPlayer()));
+        } else {
+            trick.playDomino(view.playTurnConsole(round));
+        }
 
         //add points for trick to the winners points for the round
         if (round.getCurrentTrick().getWinner().getTeam() == round.getTeams().get(0)) {

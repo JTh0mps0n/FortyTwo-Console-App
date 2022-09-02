@@ -13,21 +13,21 @@ import fortytwo.view.*;
 public class App {
     public static void main(String[] args) {
 
-        Player p1 = new Player("Justin");
-        Player p2 = new Player("Laura");
-        Player p3 = new Player("Greg");
-        Player p4 = new Player("Aimee");
-        ArrayList<Player> players = new ArrayList<Player>();
-        players.add(p1);
-        players.add(p2);
-        players.add(p3);
-        players.add(p4);
-
-        Team team1 = new Team(p1, p3, 1);
-        Team team2 = new Team(p2, p4, 1);
-        ArrayList<Team> teams = new ArrayList<Team>();
-        teams.add(team1);
-        teams.add(team2);
+//        Player p1 = new Player("Justin");
+//        Player p2 = new Player("Laura");
+//        Player p3 = new Player("Greg");
+//        Player p4 = new Player("Aimee");
+//        ArrayList<Player> players = new ArrayList<Player>();
+//        players.add(p1);
+//        players.add(p2);
+//        players.add(p3);
+//        players.add(p4);
+//
+//        Team team1 = new Team(p1, p3, 1);
+//        Team team2 = new Team(p2, p4, 1);
+//        ArrayList<Team> teams = new ArrayList<Team>();
+//        teams.add(team1);
+//        teams.add(team2);
 
         GameController gc = new GameController();
         Game game = gc.createGame();

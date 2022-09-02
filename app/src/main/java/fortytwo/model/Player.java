@@ -5,16 +5,28 @@ public class Player {
     private String name;        //players name
     private Hand hand;          //this players hand
     private Team team;          //team this player is on
+    private boolean isBot;
+    private int trumpWanted;    //used by bots
 
     /**
      * Constructor for Player
      *
      * @param name the players name
      */
-    public Player(String name) {
-        this.name = name;
+    public Player(String name, boolean isBot) {
+        if(isBot){
+            this.name = "bot x";
+        }
+        else {
+            this.name = name;
+        }
         this.hand = null;
         this.team = null;
+        this.isBot = isBot;
+    }
+
+    public boolean isBot() {
+        return isBot;
     }
 
     /**
@@ -53,6 +65,14 @@ public class Player {
      */
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public int getTrumpWanted() {
+        return trumpWanted;
+    }
+
+    public void setTrumpWanted(int trumpWanted) {
+        this.trumpWanted = trumpWanted;
     }
 
     /**
