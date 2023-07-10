@@ -6,10 +6,6 @@ import java.util.ArrayList;
 
 public class BotController {
 
-    public BotController(){
-
-    }
-
     public int getBid(Round round, Player player, boolean dumped){
         Hand hand = player.getHand();
         if(dumped){
@@ -24,7 +20,6 @@ public class BotController {
             player.setTrumpWanted(commonSuit);
             return 30;
         }
-
 
         int commonSuit = 0;
         int numInSuit = 0;
